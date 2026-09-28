@@ -102,7 +102,8 @@ export default function Home() {
       </section>
 
       <footer className="bg-gray-800 text-white py-10 px-4 text-center">
-        <p className="text-xl font-bold mb-4">marketinpakistan</p>
+        <p className="text-2xl font-bold mb-1">Market in Pakistan</p>
+        <p className="text-sm text-gray-400 mb-6">Premium Eastern Dresses</p>
         <p className="mb-2">📱 WhatsApp: 0305-7252013</p>
         <p className="mb-2">📍 Faisalabad, Pakistan</p>
         <p className="text-gray-500 text-sm mt-6">

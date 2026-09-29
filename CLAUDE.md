@@ -35,6 +35,7 @@ This is the marketinpakistan retail store — a Next.js site for a family fashio
 - Next.js App Router + TypeScript + Tailwind CSS
 - Plain `<img>` tags, not `next/image` — product images will be served pre-optimized from Cloudinary once that's wired up, so there's no need for Next's own image optimization pipeline
 - Cart state uses `useSyncExternalStore`, not `useState` + `useEffect` — this repo's ESLint config (`react-hooks/set-state-in-effect`, part of the React Compiler rule set) errors on synchronous `setState` inside effects, so reading/writing `localStorage`-backed state should go through an external store, not an effect
+- Deploy by pushing to `main` on GitHub — Vercel auto-deploys it to production (marketinpakistan.shop). Don't make dummy "trigger rebuild" commits; if the live site looks stale, run `npx vercel ls` to see whether a deployment was created, and use `npx vercel --prod` only as a manual fallback
 - No payment gateway — Cash on Delivery, confirmed manually after checkout (by phone/WhatsApp), matches how the business already operates
 
 ---

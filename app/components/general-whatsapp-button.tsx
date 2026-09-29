@@ -7,13 +7,16 @@ import { getStoredSource } from "@/app/lib/attribution";
 export function GeneralWhatsAppButton({
   className,
   children,
+  onClick,
 }: {
   className?: string;
+  onClick?: () => void;
   children?: ReactNode;
 }) {
   const baseHref = getWhatsAppLink(buildGeneralInquiryMessage());
 
   function handleClick(event: MouseEvent<HTMLAnchorElement>) {
+    onClick?.();
     const src = getStoredSource();
     if (!src) return;
     event.preventDefault();

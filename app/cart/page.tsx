@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { cartTotal, removeFromCart, updateQuantity, useCart } from "@/app/lib/cart";
+import { removeFromCart, updateQuantity, useCart } from "@/app/lib/cart";
+import { priceBreakdown } from "@/app/lib/pricing";
+import { PriceBreakdown } from "@/app/components/price-breakdown";
 
 export default function CartPage() {
   const items = useCart();
-  const total = cartTotal(items);
 
   if (items.length === 0) {
     return (
@@ -17,6 +18,8 @@ export default function CartPage() {
       </main>
     );
   }
+
+  const { subtotal, delivery, total } = priceBreakdown(items);
 
   return (
     <main className="flex-1 max-w-2xl mx-auto px-4 py-12 w-full">
@@ -54,9 +57,8 @@ export default function CartPage() {
         ))}
       </div>
 
-      <div className="flex items-center justify-between mt-8 text-lg font-semibold text-gray-800">
-        <span>Total</span>
-        <span>PKR {total.toLocaleString()}</span>
+      <div className="mt-8">
+        <PriceBreakdown subtotal={subtotal} delivery={delivery} total={total} />
       </div>
 
       <Link

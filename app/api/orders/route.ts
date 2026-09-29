@@ -1,5 +1,6 @@
 import { Resend } from "resend";
 import type { CartItem } from "@/app/lib/cart";
+import { formatDeliveryCharge, priceBreakdown } from "@/app/lib/pricing";
 
 type OrderRequestBody = {
   items: CartItem[];
@@ -20,7 +21,11 @@ function generateOrderId(): string {
   return `MIP-${stamp}-${random}`;
 }
 
-function formatOrderText(orderId: string, body: OrderRequestBody, total: number): string {
+function formatOrderText(
+  orderId: string,
+  body: OrderRequestBody,
+  { subtotal, delivery, total }: { subtotal: number; delivery: number; total: number }
+): string {
   const lines = body.items.map(
     (item) =>
       `- ${item.name}${item.size ? ` (${item.size})` : ""} x${item.quantity} — PKR ${(
@@ -40,6 +45,8 @@ function formatOrderText(orderId: string, body: OrderRequestBody, total: number)
     "Items:",
     ...lines,
     "",
+    `Subtotal: PKR ${subtotal.toLocaleString()}`,
+    `Delivery: ${formatDeliveryCharge(delivery)}`,
     `Total: PKR ${total.toLocaleString()}`,
   ]
     .filter(Boolean)
@@ -65,9 +72,9 @@ export async function POST(request: Request) {
     return Response.json({ error: "Missing required order fields" }, { status: 400 });
   }
 
-  const total = body.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const { subtotal, delivery, total } = priceBreakdown(body.items);
   const orderId = generateOrderId();
-  const orderText = formatOrderText(orderId, body, total);
+  const orderText = formatOrderText(orderId, body, { subtotal, delivery, total });
 
   const apiKey = process.env.RESEND_API_KEY;
   const notificationEmail = process.env.ORDER_NOTIFICATION_EMAIL;

@@ -83,7 +83,3 @@ export function updateQuantity(slug: string, size: string | undefined, quantity:
 export function clearCart() {
   writeToStorage([]);
 }
-
-export function cartTotal(items: CartItem[]): number {
-  return items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-}

@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { useState, type SubmitEvent } from "react";
-import { cartTotal, clearCart, useCart } from "@/app/lib/cart";
+import { clearCart, useCart } from "@/app/lib/cart";
+import { priceBreakdown } from "@/app/lib/pricing";
 import { getStoredSource } from "@/app/lib/attribution";
 import { GeneralWhatsAppButton } from "@/app/components/general-whatsapp-button";
+import { PriceBreakdown } from "@/app/components/price-breakdown";
 
 export default function CheckoutPage() {
   const items = useCart();
-  const total = cartTotal(items);
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -18,6 +19,7 @@ export default function CheckoutPage() {
   const [status, setStatus] = useState<"idle" | "submitting" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
   const [orderId, setOrderId] = useState<string | null>(null);
+  const [confirmedTotal, setConfirmedTotal] = useState<number | null>(null);
 
   async function handleSubmit(event: SubmitEvent) {
     event.preventDefault();
@@ -43,6 +45,7 @@ export default function CheckoutPage() {
         return;
       }
 
+      setConfirmedTotal(total);
       setOrderId(data.orderId);
       clearCart();
     } catch {
@@ -56,6 +59,9 @@ export default function CheckoutPage() {
       <main className="flex-1 max-w-xl mx-auto px-4 py-16 text-center">
         <h1 className="text-2xl font-bold text-gray-800 mb-3">Order received!</h1>
         <p className="text-gray-600 mb-1">Order ID: {orderId}</p>
+        {confirmedTotal !== null && (
+          <p className="text-gray-600 mb-1">Total: PKR {confirmedTotal.toLocaleString()}</p>
+        )}
         <p className="text-gray-600 mb-8">
           We&apos;ll confirm your order and delivery details shortly. Cash on Delivery.
         </p>
@@ -77,10 +83,15 @@ export default function CheckoutPage() {
     );
   }
 
+  const { subtotal, delivery, total } = priceBreakdown(items);
+
   return (
     <main className="flex-1 max-w-xl mx-auto px-4 py-12 w-full">
       <h1 className="text-2xl font-bold text-gray-800 mb-2">Checkout</h1>
-      <p className="text-gray-500 mb-8">Cash on Delivery — Total PKR {total.toLocaleString()}</p>
+      <p className="text-gray-500 mb-2">Cash on Delivery</p>
+      <div className="mb-8">
+        <PriceBreakdown subtotal={subtotal} delivery={delivery} total={total} compact />
+      </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>

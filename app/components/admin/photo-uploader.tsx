@@ -84,6 +84,15 @@ export function PhotoUploader({
     onChange([picked, ...next]);
   }
 
+  // Customers see photos in this order (first = cover), so front, back, close-up.
+  function move(index: number, delta: -1 | 1) {
+    const target = index + delta;
+    if (target < 0 || target >= images.length) return;
+    const next = [...images];
+    [next[index], next[target]] = [next[target], next[index]];
+    onChange(next);
+  }
+
   return (
     <div className="space-y-3">
       <div className="text-sm font-semibold text-gray-900">Photos</div>
@@ -128,13 +137,14 @@ export function PhotoUploader({
       />
 
       <p className="text-sm text-gray-500">
-        JPG, PNG or HEIC, up to 10 MB each. The first photo is the cover.
+        JPG, PNG or HEIC, up to 10 MB each. Customers see the photos in this order; the first is the cover. Use the arrows to reorder.
       </p>
 
       {(images.length > 0 || busy) && (
-        <ul className="flex flex-wrap gap-3">
+        <ul className="flex flex-wrap items-start gap-3">
           {images.map((url, i) => (
-            <li key={url} className="relative w-24 h-24 rounded-xl overflow-hidden bg-rose-100">
+            <li key={url} className="w-24">
+              <div className="relative w-24 h-24 rounded-xl overflow-hidden bg-rose-100">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={optimizedImage(url, 240)} alt={`Photo ${i + 1}`} className="w-full h-full object-cover" />
               {i === 0 ? (
@@ -162,6 +172,33 @@ export function PhotoUploader({
                   <path d="M6 6l12 12M18 6L6 18" />
                 </svg>
               </button>
+              </div>
+              {images.length > 1 && (
+                <div className="flex gap-1 mt-1">
+                  <button
+                    type="button"
+                    aria-label={`Move photo ${i + 1} earlier`}
+                    onClick={() => move(i, -1)}
+                    disabled={busy || i === 0}
+                    className="flex-1 h-11 rounded-lg border border-gray-300 bg-white text-gray-800 flex items-center justify-center disabled:opacity-30"
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <path d="M15 18l-6-6 6-6" />
+                    </svg>
+                  </button>
+                  <button
+                    type="button"
+                    aria-label={`Move photo ${i + 1} later`}
+                    onClick={() => move(i, 1)}
+                    disabled={busy || i === images.length - 1}
+                    className="flex-1 h-11 rounded-lg border border-gray-300 bg-white text-gray-800 flex items-center justify-center disabled:opacity-30"
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <path d="M9 6l6 6-6 6" />
+                    </svg>
+                  </button>
+                </div>
+              )}
             </li>
           ))}
           {Array.from({ length: uploading }).map((_, i) => (

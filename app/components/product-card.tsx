@@ -4,6 +4,7 @@ import { optimizedImage } from "@/app/lib/images";
 
 export function ProductCard({ product }: { product: Product }) {
   const soldOut = product.quantity <= 0;
+  const photoCount = product.images.length;
 
   return (
     <Link
@@ -20,6 +21,16 @@ export function ProductCard({ product }: { product: Product }) {
         {soldOut && (
           <span className="absolute top-3 left-3 bg-gray-900 text-white text-xs font-semibold px-3 py-1 rounded-full">
             Sold out
+          </span>
+        )}
+        {photoCount > 1 && (
+          <span className="absolute bottom-3 right-3 inline-flex items-center gap-1.5 bg-gray-900/80 text-white text-xs font-semibold px-2.5 py-1 rounded-full">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="16" rx="2" />
+              <circle cx="9" cy="10" r="1.5" />
+              <path d="M21 16l-5-5-9 9" />
+            </svg>
+            {photoCount} photos
           </span>
         )}
       </div>

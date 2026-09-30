@@ -105,6 +105,9 @@ Column `name` (not `title`) so the existing `Product` type and UI are untouched.
 - [ ] Production smoke test on marketinpakistan.shop (login, create a test product, place a test order, then delete the test product)
 - [ ] Hand the brother the URL `/admin` and the password (never committed, never in chat logs beyond the setup)
 
+## Later (not in this plan)
+Orders table + admin Cancel button that restores stock (today cancelling an order needs a manual quantity edit); a Neon `dev` branch; deleting Cloudinary files when a product is deleted.
+
 ## Out of scope for v1
 Adding new collections from the UI (Summer is one SQL insert until then), per-user logins, drag-drop bulk upload, deleting Cloudinary files on product delete, sizes editor (current dresses are unstitched, `sizes` stays `{}`), order history, analytics.
 

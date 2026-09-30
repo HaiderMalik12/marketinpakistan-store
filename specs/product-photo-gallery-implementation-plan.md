@@ -32,13 +32,14 @@ This plan adds a gallery to the customer side only. No database change, no new d
 ## Tasks
 
 ### Phase 1: Gallery component
-- [ ] Read the Next docs above; note the lint rule constraint
-- [ ] Create `product-gallery.tsx`: main scroll-snap strip, counter, arrows, dots, thumbnail row (phone layout)
-- [ ] Desktop layout: vertical thumbnails left, large photo, "Click to zoom" hint (`md:` breakpoint)
-- [ ] Single-photo mode (no controls)
-- [ ] Accessibility: real `<button>`s with `aria-label`s ("Show photo 2", "Previous photo"), `aria-current` on the active thumbnail, live counter (`aria-live="polite"`), touch targets >= 44 px, alt text `"{name}, photo N of M"`
-- [ ] Wire into `app/product/[slug]/page.tsx`; keep the sold-out and Add to Cart logic untouched
-- [ ] Verify: `npm run lint`, `npx tsc --noEmit`, `npm run build`
+- [x] Read the Next docs above; note the lint rule constraint
+- [x] Create `product-gallery.tsx`: main scroll-snap strip, counter, arrows, dots, thumbnail row (phone layout)
+- [x] Desktop layout: vertical thumbnails left, large photo, "Click to zoom" hint (`md:` breakpoint)
+- [x] Single-photo mode (no controls)
+- [x] Accessibility: real `<button>`s with `aria-label`s ("Show photo 2", "Previous photo"), `aria-current` on the active thumbnail, live counter (`aria-live="polite"`), touch targets >= 44 px, alt text `"{name}, photo N of M"`
+- [x] Wire into `app/product/[slug]/page.tsx`; keep the sold-out and Add to Cart logic untouched
+- [x] Verify: `npm run lint`, `npx tsc --noEmit`, `npm run build`
+  - Built: `app/components/product-gallery.tsx`, wired into the product page (container widened to `max-w-5xl`). Checked in a browser with a temporary 3-photo product (deleted afterwards): counter, Next/Previous with wrap-around, thumbnail click, manual scroll/swipe updates the counter, desktop thumbnail column vs phone dots, single-photo product shows no controls, no page errors. Real-phone swipe still to be checked in Phase 4.
 
 ### Phase 2: Zoom
 - [ ] `<dialog>` overlay: open on tap/click of the main photo, close button, Esc, click on backdrop

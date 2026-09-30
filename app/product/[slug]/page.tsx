@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { getProductBySlug, listLiveProducts } from "@/app/lib/products";
 import { optimizedImage } from "@/app/lib/images";
 import { AddToCartForm } from "@/app/components/add-to-cart-form";
+import { ProductGallery } from "@/app/components/product-gallery";
 
 export const revalidate = 300;
 
@@ -39,18 +40,13 @@ export default async function ProductPage(props: PageProps<"/product/[slug]">) {
   }
 
   return (
-    <main className="flex-1 max-w-4xl mx-auto px-4 py-12 w-full">
+    <main className="flex-1 max-w-5xl mx-auto px-4 py-12 w-full">
       <Link href="/" className="text-sm text-gray-500 hover:text-gray-700">
         &larr; Back to collection
       </Link>
 
       <div className="mt-6 grid md:grid-cols-2 gap-10">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={optimizedImage(product.images[0], 900)}
-          alt={product.name}
-          className="w-full rounded-xl object-cover"
-        />
+        <ProductGallery images={product.images} name={product.name} />
 
         <div>
           <p className="text-sm text-gray-500">{product.catalog}</p>

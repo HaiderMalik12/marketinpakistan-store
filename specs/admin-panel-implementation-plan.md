@@ -91,10 +91,12 @@ Column `name` (not `title`) so the existing `Product` type and UI are untouched.
   - Test run: real upload to Cloudinary `products/`, create, list, sale page volume headings, hide (404) / show, edit (slug unchanged), delete with cancel/confirm, empty-form errors that clear on edit, unauthenticated sign endpoint returns 401. Test product and test photo were deleted afterwards.
 
 ### Phase 4: Server-authoritative orders (recommended; stock and price integrity)
-- [ ] Rework `app/api/orders/route.ts` as described (DB price, availability check, atomic stock decrement, restore on email failure)
-- [ ] Checkout/cart: show unavailable-item message on `409`
-- [ ] `app/lib/pricing.ts` stays as is (delivery tiers still computed from quantity)
-- [ ] Verify: tampered `price` in the request is ignored; ordering more than stock or a hidden item is rejected; successful order lowers stock; email still sent
+- [x] Rework `app/api/orders/route.ts` as described (DB price, availability check, atomic stock decrement, restore on email failure)
+- [x] Checkout/cart: show unavailable-item message on `409`
+- [x] `app/lib/pricing.ts` stays as is (delivery tiers still computed from quantity)
+- [x] Verify: tampered `price` in the request is ignored; ordering more than stock or a hidden item is rejected; successful order lowers stock; email still sent
+  - Implementation notes: the browser now only sends slug/size/quantity (its prices are used only to detect a price change, which returns 409 `corrections` so the customer reviews the cart; nothing is ordered). Stock is taken in one SQL statement (`app/lib/orders.ts`), given back if the email fails or throws, and the Resend config is checked before stock is touched. `reconcileCart()` in `app/lib/cart.ts` applies the corrections and the checkout shows what changed.
+  - Tested: tampered price, unknown/hidden product, over-stock, bad inputs (400), email failure restores stock (bad key), race for the last unit (one 409, stock never negative), cart-correction UI in a browser, and one real order (total PKR 3,300, stock 10 -> 9, email sent to the owner; stock reset to 10). Not tested: the "email not configured" 500 path (ordered before the stock step by code only).
 
 ### Phase 5: Ship
 - [ ] Remove `app/data/products.ts` once nothing imports it; `npm run lint && npm run build`

@@ -83,3 +83,47 @@ export function updateQuantity(slug: string, size: string | undefined, quantity:
 export function clearCart() {
   writeToStorage([]);
 }
+
+export type CartCorrection = {
+  slug: string;
+  name: string;
+  reason: "gone" | "stock" | "price";
+  available?: number;
+  price?: number;
+};
+
+// Applies the server's view of the cart (from a 409 on checkout) and returns a
+// plain-language line for each change, so the customer knows what happened.
+export function reconcileCart(corrections: CartCorrection[]): string[] {
+  const messages: string[] = [];
+  let items = getSnapshot();
+
+  for (const c of corrections) {
+    if (c.reason === "gone") {
+      const name = items.find((i) => i.slug === c.slug)?.name ?? c.name;
+      items = items.filter((i) => i.slug !== c.slug);
+      messages.push(`${name} is no longer available and was removed.`);
+    } else if (c.reason === "stock") {
+      let left = c.available ?? 0;
+      items = items
+        .map((i) => {
+          if (i.slug !== c.slug) return i;
+          const kept = Math.min(i.quantity, left);
+          left -= kept;
+          return { ...i, quantity: kept };
+        })
+        .filter((i) => i.quantity > 0);
+      messages.push(
+        (c.available ?? 0) > 0
+          ? `Only ${c.available} of ${c.name} left, so the quantity was reduced.`
+          : `${c.name} just sold out and was removed.`
+      );
+    } else if (c.reason === "price" && c.price !== undefined) {
+      items = items.map((i) => (i.slug === c.slug ? { ...i, price: c.price! } : i));
+      messages.push(`The price of ${c.name} changed to PKR ${c.price.toLocaleString()}.`);
+    }
+  }
+
+  writeToStorage(items);
+  return messages;
+}

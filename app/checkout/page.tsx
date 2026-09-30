@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState, type SubmitEvent } from "react";
-import { clearCart, useCart } from "@/app/lib/cart";
+import { clearCart, reconcileCart, useCart } from "@/app/lib/cart";
 import { priceBreakdown } from "@/app/lib/pricing";
 import { getStoredSource } from "@/app/lib/attribution";
 import { GeneralWhatsAppButton } from "@/app/components/general-whatsapp-button";
@@ -18,6 +18,7 @@ export default function CheckoutPage() {
   const [city, setCity] = useState("");
   const [status, setStatus] = useState<"idle" | "submitting" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const [cartChanges, setCartChanges] = useState<string[]>([]);
   const [orderId, setOrderId] = useState<string | null>(null);
   const [confirmedTotal, setConfirmedTotal] = useState<number | null>(null);
 
@@ -25,6 +26,7 @@ export default function CheckoutPage() {
     event.preventDefault();
     setStatus("submitting");
     setErrorMessage("");
+    setCartChanges([]);
 
     try {
       const response = await fetch("/api/orders", {
@@ -39,13 +41,21 @@ export default function CheckoutPage() {
 
       const data = await response.json();
 
+      if (response.status === 409 && Array.isArray(data.corrections)) {
+        // Stock or prices changed since the items were added: update the cart and let
+        // the customer review before ordering again. Nothing was ordered.
+        setCartChanges(reconcileCart(data.corrections));
+        setStatus("idle");
+        return;
+      }
+
       if (!response.ok) {
         setStatus("error");
         setErrorMessage(data.error ?? "Something went wrong. Please try again.");
         return;
       }
 
-      setConfirmedTotal(total);
+      setConfirmedTotal(typeof data.total === "number" ? data.total : total);
       setOrderId(data.orderId);
       clearCart();
     } catch {
@@ -76,6 +86,16 @@ export default function CheckoutPage() {
     return (
       <main className="flex-1 max-w-xl mx-auto px-4 py-16 text-center">
         <h1 className="text-2xl font-bold text-gray-800 mb-4">Your cart is empty</h1>
+        {cartChanges.length > 0 && (
+          <div role="alert" className="bg-amber-50 text-amber-900 text-sm rounded-lg px-4 py-3 mb-6 text-left">
+            <p className="font-semibold mb-1">Your cart was updated. Nothing has been ordered.</p>
+            <ul className="list-disc pl-5 space-y-1">
+              {cartChanges.map((m) => (
+                <li key={m}>{m}</li>
+              ))}
+            </ul>
+          </div>
+        )}
         <Link href="/" className="text-rose-600 font-medium hover:underline">
           Browse the collection
         </Link>
@@ -92,6 +112,24 @@ export default function CheckoutPage() {
       <div className="mb-8">
         <PriceBreakdown subtotal={subtotal} delivery={delivery} total={total} compact />
       </div>
+
+      {cartChanges.length > 0 && (
+        <div role="alert" className="bg-amber-50 text-amber-900 text-sm rounded-lg px-4 py-3 mb-6">
+          <p className="font-semibold mb-1">Your cart was updated. Nothing has been ordered yet.</p>
+          <ul className="list-disc pl-5 space-y-1">
+            {cartChanges.map((m) => (
+              <li key={m}>{m}</li>
+            ))}
+          </ul>
+          <p className="mt-2">
+            Please check the total above, then press Place Order again, or{" "}
+            <Link href="/cart" className="underline font-medium">
+              review your cart
+            </Link>
+            .
+          </p>
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>

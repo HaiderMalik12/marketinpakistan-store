@@ -161,3 +161,10 @@ export async function setProductStatus(id: number, status: "live" | "hidden"): P
 export async function deleteProduct(id: number): Promise<void> {
   await getSql().query("DELETE FROM products WHERE id = $1", [id]);
 }
+
+// Any status: the order route needs to tell "hidden/deleted" apart from "in stock".
+export async function getProductsBySlugs(slugs: string[]): Promise<Product[]> {
+  if (slugs.length === 0) return [];
+  const rows = await query("SELECT * FROM products WHERE slug = ANY($1::text[])", [slugs]);
+  return rows.map(toProduct);
+}

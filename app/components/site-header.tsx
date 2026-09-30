@@ -15,12 +15,15 @@ export function SiteHeader() {
   // (including browser back/forward) closes it without an effect.
   const [openPath, setOpenPath] = useState<string | null>(null);
   const open = openPath === pathname;
+  const isAdminArea = pathname.startsWith("/admin");
   const close = () => setOpenPath(null);
 
   const linkClass = "text-sm font-medium text-gray-800 hover:text-rose-600 transition-colors";
   const saleClass = "text-sm font-semibold text-rose-600 hover:text-rose-700 transition-colors";
   const helpClass = "text-sm text-gray-500 hover:text-green-600 transition-colors";
   const cartLabel = `Cart (${count})`;
+
+  if (isAdminArea) return null;
 
   return (
     <header className="border-b bg-white sticky top-0 z-10">

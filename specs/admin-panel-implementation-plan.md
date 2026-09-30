@@ -58,8 +58,8 @@ Column `name` (not `title`) so the existing `Product` type and UI are untouched.
 ### Phase 0: Owner setup (needs the owner, not code)
 - [x] Read Neon's free-plan terms (commercial use); decide go / no-go
 - [x] Add **Neon** via `npx vercel integration add neon` (done: resource `neon-charcoal-yacht`, `DATABASE_URL` in all 3 environments). A separate Neon `dev` branch was NOT created, so local dev and production share one database
-- [ ] Cloudinary dashboard → copy API key + API secret (Settings → API Keys)
-- [ ] Choose the shared admin password (long); generate `SESSION_SECRET`; add all env vars to Vercel (all 3 environments) and `.env.local`
+- [x] Cloudinary dashboard → copy API key + API secret (Settings → API Keys)
+- [x] Choose the shared admin password (long); generate `SESSION_SECRET`; add all env vars to Vercel (all 3 environments) and `.env.local`
 - [ ] Give the actual quantity in stock for the 10 existing Rangreet designs (or agree a default)
 
 ### Phase 1: Database + storefront reads from it
@@ -73,11 +73,11 @@ Column `name` (not `title`) so the existing `Product` type and UI are untouched.
 - [x] Verify: storefront reads from Neon; lint + build pass; browser test of home/sale/product/sold-out/unknown slug passed. Note: `app/data/products.ts` was already deleted here (planned for Phase 5); seed quantities are a placeholder 10 each
 
 ### Phase 2: Admin auth
-- [ ] `app/lib/session.ts` (`createSession`, `verifySession`, `requireAdmin`, `destroySession`)
-- [ ] `app/admin/login/page.tsx` + `login` / `logout` actions (timing-safe compare, 1 s delay on failure)
-- [ ] `proxy.ts` (matcher `/admin/:path*`, redirect to login)
-- [ ] `SiteHeader` hides on `/admin*`; admin `robots: noindex`
-- [ ] Verify: `/admin` redirects when logged out; wrong password rejected; right password works; cookie is httpOnly; logout works
+- [x] `app/lib/session.ts` (`createSession`, `verifySession`, `requireAdmin`, `destroySession`)
+- [x] `app/admin/login/page.tsx` + `login` / `logout` actions (timing-safe compare, 1 s delay on failure)
+- [x] `proxy.ts` (matcher `/admin/:path*`, redirect to login)
+- [x] `SiteHeader` hides on `/admin*`; admin `robots: noindex`
+- [x] Verify (browser, phone width): logged-out `/admin` redirects; wrong password rejected after ~1 s; right password signs in; cookie httpOnly + SameSite=Lax; logout works; forged cookie rejected; storefront header still shows. Session token logic lives in `app/lib/session-token.ts` so `proxy.ts` can import it
 
 ### Phase 3: Admin product management
 - [ ] `app/admin/(protected)/layout.tsx` (sidebar / mobile top bar, logout)

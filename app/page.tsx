@@ -1,9 +1,15 @@
 import Link from "next/link";
-import { getCollectionProducts, products } from "@/app/data/products";
+import { getCollectionProducts, listLiveProducts } from "@/app/lib/products";
+import { optimizedImage } from "@/app/lib/images";
 import { ProductCard } from "@/app/components/product-card";
 
-export default function Home() {
-  const saleProducts = getCollectionProducts("winter-clearance");
+export const revalidate = 300;
+
+export default async function Home() {
+  const [products, saleProducts] = await Promise.all([
+    listLiveProducts(),
+    getCollectionProducts("winter-clearance"),
+  ]);
   const collage = saleProducts.slice(0, 4);
 
   return (
@@ -59,7 +65,7 @@ export default function Home() {
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
                         key={product.id}
-                        src={product.images[0]}
+                        src={optimizedImage(product.images[0], 400)}
                         alt={product.name}
                         className="w-full h-40 md:h-48 object-cover rounded-xl"
                       />

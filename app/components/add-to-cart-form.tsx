@@ -9,11 +9,13 @@ export function AddToCartForm({
   name,
   price,
   sizes,
+  maxQuantity,
 }: {
   slug: string;
   name: string;
   price: number;
   sizes: string[];
+  maxQuantity: number;
 }) {
   const router = useRouter();
   const [size, setSize] = useState(sizes[0] ?? "");
@@ -61,8 +63,11 @@ export function AddToCartForm({
           id="quantity"
           type="number"
           min={1}
+          max={maxQuantity}
           value={quantity}
-          onChange={(e) => setQuantity(Math.max(1, Number(e.target.value) || 1))}
+          onChange={(e) =>
+            setQuantity(Math.min(maxQuantity, Math.max(1, Number(e.target.value) || 1)))
+          }
           className="border rounded-lg px-3 py-2 w-24"
         />
       </div>

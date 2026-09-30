@@ -57,9 +57,9 @@ This plan adds a gallery to the customer side only. No database change, no new d
   - Browser-tested with a temporary sold-out 3-photo product (deleted): badge on multi-photo cards only, badge + Sold out together, admin reorder [1,2,3] -> [1,3,2] -> [3,1,2], Cover badge follows the first photo, saved order in the database, and the customer product page, WhatsApp/OG image and sale-card cover all switched to the new first photo. No page errors.
 
 ### Phase 4: Verify and ship
-- [ ] Browser test at phone (375 px) and desktop (1280 px) with Playwright against `next dev`, using a **temporary test product inserted directly in the database with 3 existing Cloudinary URLs** (no new uploads, so no orphan files), deleted afterwards. Check: thumbnails change the photo, arrows wrap around, swipe (touch scroll) updates counter/dots, zoom opens/closes/Esc, opened photo matches, single-photo product shows no controls, card badge appears only for 2+ photos, sold-out product still shows the gallery
-- [ ] Check cover photo/OG image is still `images[0]` (view-source on the product page)
-- [ ] Update `CLAUDE.md` "What's implemented" (gallery, zoom, badge, admin reorder) and tick this spec
+- [x] Browser test at phone (375 px) and desktop (1280 px) with Playwright against `next dev`, using a **temporary test product inserted directly in the database with 3 existing Cloudinary URLs** (no new uploads, so no orphan files), deleted afterwards. Check: thumbnails change the photo, arrows wrap around, swipe (touch scroll) updates counter/dots, zoom opens/closes/Esc, opened photo matches, single-photo product shows no controls, card badge appears only for 2+ photos, sold-out product still shows the gallery
+- [x] Check cover photo/OG image is still `images[0]` (view-source on the product page)
+- [x] Update `CLAUDE.md` "What's implemented" (gallery, zoom, badge, admin reorder) and tick this spec
 - [ ] Commit, ensure `gh auth` active account is `HaiderMalik12`, push `main`, confirm `npx vercel ls` shows Ready
 - [ ] Live check on marketinpakistan.shop with the temporary test product (then delete it); look at it once on a real phone
 

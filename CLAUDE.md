@@ -35,7 +35,7 @@ This is the marketinpakistan retail store — a Next.js site for a family fashio
 
 **Still needed:**
 1. Real products: the 10 seeded Rangreet dresses have a **placeholder quantity of 10 each** — set real stock in the admin panel. Add the new volumes' dresses there too
-2. Rotate the Cloudinary API secret (it was pasted into a chat while setting up), then update `.env.local` and Vercel (`npx vercel env add … --force`)
+2. ~~Rotate the Cloudinary API secret~~ — done 2026-09-30: new Master Admin key generated, set in `.env.local` and Vercel (all 3 environments), production redeployed, live upload verified, old key disabled (Cloudinary answers 401 "disabled api_key"). Never paste keys into chat; put them straight into `.env.local`/Vercel
 3. Optional: orders table + Cancel button (restores stock); a Neon `dev` branch so local testing doesn't touch production data; read Neon's free-plan terms on commercial use
 4. Verify `marketinpakistan.shop` with Resend so customer confirmation emails actually deliver (currently only the owner-notification email works)
 

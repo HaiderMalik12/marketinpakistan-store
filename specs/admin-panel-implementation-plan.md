@@ -80,14 +80,15 @@ Column `name` (not `title`) so the existing `Product` type and UI are untouched.
 - [x] Verify (browser, phone width): logged-out `/admin` redirects; wrong password rejected after ~1 s; right password signs in; cookie httpOnly + SameSite=Lax; logout works; forged cookie rejected; storefront header still shows. Session token logic lives in `app/lib/session-token.ts` so `proxy.ts` can import it
 
 ### Phase 3: Admin product management
-- [ ] `app/admin/(protected)/layout.tsx` (sidebar / mobile top bar, logout)
-- [ ] `POST /api/admin/cloudinary-sign` (admin only, signed params incl. allowed formats and folder)
-- [ ] `photo-uploader.tsx`: choose/camera, progress, remove, set cover / reorder, direct upload to Cloudinary
-- [ ] `product-form.tsx` + `saveProduct` action with validation; slug generation
-- [ ] `new` and `[id]/edit` pages
-- [ ] Products list page: tabs, row actions Hide/Show (`setProductStatus`), Delete with confirm (`deleteProduct`)
-- [ ] `revalidatePath` after every mutation
-- [ ] Verify (real browser, phone 375 px + desktop): create with real photo → appears on `/winter-clearance` and home; hide → 404 on product URL and gone from lists; show → back; edit price/qty; delete; unauthenticated `curl` to the sign route and to each action returns 401/redirect
+- [x] `app/admin/(protected)/layout.tsx` (sidebar / mobile top bar, logout)
+- [x] `POST /api/admin/cloudinary-sign` (admin only, signed params incl. allowed formats and folder)
+- [x] `photo-uploader.tsx`: choose/camera, progress, remove, set cover / reorder, direct upload to Cloudinary
+- [x] `product-form.tsx` + `saveProduct` action with validation; slug generation
+- [x] `new` and `[id]/edit` pages
+- [x] Products list page: tabs, row actions Hide/Show (`setProductStatus`), Delete with confirm (`deleteProduct`)
+- [x] `revalidatePath` after every mutation
+- [x] Verified in a real browser at phone width (desktop layout not browser-tested): create with real photo → appears on `/winter-clearance` and home; hide → 404 on product URL and gone from lists; show → back; edit price/qty; delete; unauthenticated `curl` to the sign route and to each action returns 401/redirect
+  - Test run: real upload to Cloudinary `products/`, create, list, sale page volume headings, hide (404) / show, edit (slug unchanged), delete with cancel/confirm, empty-form errors that clear on edit, unauthenticated sign endpoint returns 401. Test product and test photo were deleted afterwards.
 
 ### Phase 4: Server-authoritative orders (recommended; stock and price integrity)
 - [ ] Rework `app/api/orders/route.ts` as described (DB price, availability check, atomic stock decrement, restore on email failure)

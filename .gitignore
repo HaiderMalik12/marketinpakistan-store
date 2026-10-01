@@ -42,3 +42,7 @@ yarn-error.log*
 next-env.d.ts
 
 mip-products
+# Neon integration skill files (local only)
+.agents/
+.claude/
+skills-lock.json

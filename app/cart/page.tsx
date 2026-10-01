@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { removeFromCart, updateQuantity, useCart } from "@/app/lib/cart";
 import { priceBreakdown } from "@/app/lib/pricing";
+import { QuantityInput } from "@/app/components/quantity-input";
 import { PriceBreakdown } from "@/app/components/price-breakdown";
 
 export default function CartPage() {
@@ -37,13 +38,9 @@ export default function CartPage() {
               <p className="text-sm text-gray-500">PKR {item.price.toLocaleString()} each</p>
             </div>
             <div className="flex items-center gap-3">
-              <input
-                type="number"
-                min={1}
+              <QuantityInput
                 value={item.quantity}
-                onChange={(e) =>
-                  updateQuantity(item.slug, item.size, Number(e.target.value) || 1)
-                }
+                onChange={(q) => updateQuantity(item.slug, item.size, q)}
                 className="border rounded-lg px-2 py-1 w-16 text-center"
               />
               <button

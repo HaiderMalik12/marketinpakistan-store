@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState, type SubmitEvent } from "react";
 import { addToCart } from "@/app/lib/cart";
+import { QuantityInput } from "@/app/components/quantity-input";
 
 export function AddToCartForm({
   slug,
@@ -59,15 +60,11 @@ export function AddToCartForm({
         <label htmlFor="quantity" className="block text-sm text-gray-600 mb-1">
           Quantity
         </label>
-        <input
+        <QuantityInput
           id="quantity"
-          type="number"
-          min={1}
-          max={maxQuantity}
           value={quantity}
-          onChange={(e) =>
-            setQuantity(Math.min(maxQuantity, Math.max(1, Number(e.target.value) || 1)))
-          }
+          onChange={setQuantity}
+          max={maxQuantity}
           className="border rounded-lg px-3 py-2 w-24"
         />
       </div>
